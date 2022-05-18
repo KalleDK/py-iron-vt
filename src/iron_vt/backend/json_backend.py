@@ -7,7 +7,7 @@ import contextlib
 from typing import Dict, Literal, TypedDict, Mapping
 
 
-from iron_vt.vault import IronValutError, Entry
+from iron_vt.vault import IronVaultError, Entry
 
 # region IO Helper
 
@@ -96,7 +96,7 @@ def safe_path(path: pathlib.Path, safe_name: str, b64_encode: bool):
     suffix = ".b64" if b64_encode else ".json"
     safe_path = path.joinpath(safe_name).with_suffix(suffix)
     if safe_path.parent != path:
-        raise IronValutError(f"invalid safe name {safe_name}")
+        raise IronVaultError(f"invalid safe name {safe_name}")
     return safe_path
 
 

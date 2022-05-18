@@ -17,7 +17,7 @@ else:  # coverage: ignore
     PathLike = os.PathLike
 
 
-class IronValutError(RuntimeError):
+class IronVaultError(RuntimeError):
     pass
 
 
@@ -40,6 +40,12 @@ class Safe:
         if value is None:
             return default
         return value.decode("utf-8")
+
+    def __delitem__(self, name: str):
+        try:
+            del self.entries[name]
+        except Exception:
+            raise IronVaultError("no entry by that name")
 
     def __getitem__(self, name: str) -> str:
         return self.entries[name].decode("utf-8")
@@ -87,9 +93,13 @@ class BaseVault:
 
         encryptor = self._encryptor_cls(key.encode("utf-8"))
 
-        entries = {
-            name: encryptor.decrypt(entry) for name, entry in encrypted_entries.items()
-        }
+        try:
+            entries = {
+                name: encryptor.decrypt(entry)
+                for name, entry in encrypted_entries.items()
+            }
+        except Exception:
+            raise IronVaultError("invalid safe key")
 
         return Safe(name=name, entries=entries)
 

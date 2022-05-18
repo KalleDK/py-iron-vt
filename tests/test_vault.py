@@ -11,6 +11,7 @@ import iron_vt
 class SafeFixture:
     safe: iron_vt.Safe
     key: str
+    invalid_key: str
     json_filename: str
     json_file: str
     b64_filename: str
@@ -28,6 +29,7 @@ def valid_test_safe():
             },
         ),
         key="mykey",
+        invalid_key="nokey",
         json_filename="valid_safe.json",
         json_file=""
         '{\n    "KEY_1": {\n        "salt": "AAAAAAAAAAAAAAAAAAAAAA==",\n'
@@ -83,6 +85,16 @@ def test_vault_load_json(valid_test_safe: SafeFixture):
         pathlib.Path(vault_path, valid_test_safe.json_filename), "rt"
     )
     assert got == valid_test_safe.safe
+
+
+def test_vault_load_json_invalid_key(valid_test_safe: SafeFixture):
+    vault_path = "vt"
+
+    m = unittest.mock.mock_open(read_data=valid_test_safe.json_file)
+    with unittest.mock.patch("iron_vt.backend.json_backend._open", m):
+        vault = iron_vt.Vault(vault_path, b64_encode=False)
+        with pytest.raises(iron_vt.IronVaultError):
+            vault.load(valid_test_safe.safe.name, valid_test_safe.invalid_key)
 
 
 def test_vault_save_b64(valid_test_safe: SafeFixture):
@@ -168,3 +180,13 @@ def test_create():
     got = v.create("demo_1")
     want = iron_vt.Safe("demo_1")
     assert got == want
+
+
+def test_delete():
+    v = iron_vt.Vault()
+    safe = v.create("demo_1")
+    safe.add("flaf", "secert")
+    del safe["flaf"]
+
+    with pytest.raises(iron_vt.IronVaultError):
+        del safe["flaf"]

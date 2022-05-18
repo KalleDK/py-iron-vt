@@ -87,7 +87,7 @@ def test_get_safe_path(
     _path = pathlib.Path(path)
     _want = pathlib.Path(want)
     if want_exception:
-        with pytest.raises(iron_vt.IronValutError):
+        with pytest.raises(iron_vt.IronVaultError):
             json_backend.safe_path(_path, name, b64_encode)
     else:
         got = json_backend.safe_path(_path, name, b64_encode)

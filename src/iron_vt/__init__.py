@@ -2,12 +2,12 @@ import pathlib
 
 from typing import Union
 
-from .vault import BaseVault, PathLike, Safe, IronValutError
+from .vault import BaseVault, PathLike, Safe, IronVaultError
 from .backend.json_backend import JSONBackend
 from .encryptor import FernetEncryptor
 
 
-VERSION = '0.1.1'
+VERSION = "0.1.1"
 
 
 class Vault(BaseVault):
@@ -17,4 +17,8 @@ class Vault(BaseVault):
         super().__init__(backend, encryptor_cls)
 
 
-__all__ = ["Vault", "Safe", "IronValutError", "VERSION"]
+def load(name: str, key: str, path: Union[str, PathLike] = "./vt"):
+    return Vault(path).load(name, key)
+
+
+__all__ = ["Vault", "Safe", "IronVaultError", "VERSION"]
