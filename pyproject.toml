@@ -1,0 +1,43 @@
+[project]
+name = "iron_vt"
+dynamic = ["version"]
+
+[build-system]
+requires = ["setuptools>=42.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "iron_vt.VERSION"}
+ 
+[tool.pylint.basic]
+good-names = ["fp", "e", "ip", "T"]
+ 
+[tool.pylint.format]
+max-line-length=88
+ 
+[tool.pyright]
+include = ["src"]
+pythonPlatform = "All"
+ 
+[tool.coverage.xml]
+output = "coverage.xml"
+ 
+[tool.coverage.report]
+exclude_lines = [
+    "coverage: linux ignore",
+    "coverage: ignore",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):"
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra --cov=iron_vt --cov-report=xml --cov-report=term"
+testpaths = [
+    "tests"
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
